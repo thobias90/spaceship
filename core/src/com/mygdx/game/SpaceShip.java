@@ -9,44 +9,51 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 public class SpaceShip extends ApplicationAdapter {
-	// The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
+	// The SpriteBatch is a special class that is used to draw 2D images, like the
+	// textures we loaded.
 	SpriteBatch background;
-	Texture bgImg, tShip;
-	private Sprite spaceShip;
-	private float spaceShipPositionX, spaceShipPositionY;
+	Texture bgImg, tShip, tMissile;
+	private Sprite spaceShip, missile;
+	private float spaceShipPosX, spaceShipPosY, missilePosX, missilePosY;
 	private int speed = 10;
-	
+
 	/**
 	 * Create elements
 	 */
 	@Override
-	public void create () {
+	public void create() {
 		background = new SpriteBatch();
 		bgImg = new Texture("bg.png");
 		tShip = new Texture("spaceship.png");
 		spaceShip = new Sprite(tShip);
-		spaceShipPositionX = 0;
-		spaceShipPositionY = 0;
+		tMissile = new Texture("missile.png");
+		missile = new Sprite(tMissile);
+		spaceShipPosX = 0;
+		spaceShipPosY = 0;
+		missilePosX = 0;
+		missilePosY = 0;
 	}
 
 	/**
 	 * Main loop
 	 */
 	@Override
-	public void render () {
+	public void render() {
 		this.moveSpaceShip();
+		this.moveMissile();
 		ScreenUtils.clear(1, 0, 0, 1);
 		background.begin();
 		background.draw(bgImg, 0, 0);
-		background.draw(spaceShip, spaceShipPositionX, spaceShipPositionY);
+		background.draw(spaceShip, spaceShipPosX, spaceShipPosY);
+		background.draw(missile, missilePosX, missilePosY);
 		background.end();
 	}
-	
+
 	/**
 	 * Clear resources
 	 */
 	@Override
-	public void dispose () {
+	public void dispose() {
 		background.dispose();
 		bgImg.dispose();
 		tShip.dispose();
@@ -57,24 +64,29 @@ public class SpaceShip extends ApplicationAdapter {
 	 */
 	private void moveSpaceShip() {
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			if (spaceShipPositionX < (Gdx.graphics.getWidth() - spaceShip.getWidth())) {
-				spaceShipPositionX += speed;
+			if (spaceShipPosX < (Gdx.graphics.getWidth() - spaceShip.getWidth())) {
+				spaceShipPosX += speed;
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			if (spaceShipPositionX > 0) {
-				spaceShipPositionX -= speed;
+			if (spaceShipPosX > 0) {
+				spaceShipPosX -= speed;
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			if (spaceShipPositionY < (Gdx.graphics.getHeight() - spaceShip.getHeight())) {
-				spaceShipPositionY += speed;
+			if (spaceShipPosY < (Gdx.graphics.getHeight() - spaceShip.getHeight())) {
+				spaceShipPosY += speed;
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			if (spaceShipPositionY > 0) {
-				spaceShipPositionY -= speed;
+			if (spaceShipPosY > 0) {
+				spaceShipPosY -= speed;
 			}
 		}
+	}
+
+	private void moveMissile() {
+		missilePosX = spaceShipPosX + (spaceShip.getWidth() / 2) - (missile.getWidth() / 2);
+		missilePosY = spaceShipPosY + (spaceShip.getHeight() / 2) - (missile.getHeight() / 2);
 	}
 }
