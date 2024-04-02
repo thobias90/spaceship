@@ -16,6 +16,8 @@ public class SpaceShip extends ApplicationAdapter {
 	private Sprite spaceShip, missile;
 	private float spaceShipPosX, spaceShipPosY, missilePosX, missilePosY;
 	private int speed = 10;
+	private boolean attack;
+	private int attackSpeed = 20;
 
 	/**
 	 * Create elements
@@ -32,6 +34,7 @@ public class SpaceShip extends ApplicationAdapter {
 		spaceShipPosY = 0;
 		missilePosX = 0;
 		missilePosY = 0;
+		attack = false;
 	}
 
 	/**
@@ -44,8 +47,10 @@ public class SpaceShip extends ApplicationAdapter {
 		ScreenUtils.clear(1, 0, 0, 1);
 		background.begin();
 		background.draw(bgImg, 0, 0);
+		if (attack) {
+			background.draw(missile, missilePosX, missilePosY);
+		}
 		background.draw(spaceShip, spaceShipPosX, spaceShipPosY);
-		background.draw(missile, missilePosX, missilePosY);
 		background.end();
 	}
 
@@ -86,7 +91,20 @@ public class SpaceShip extends ApplicationAdapter {
 	}
 
 	private void moveMissile() {
-		missilePosX = spaceShipPosX + (spaceShip.getWidth() / 2) - (missile.getWidth() / 2);
-		missilePosY = spaceShipPosY + (spaceShip.getHeight() / 2) - (missile.getHeight() / 2);
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && !attack ) {
+			attack = true;
+			missilePosY = spaceShipPosY + (spaceShip.getHeight() / 2) - (missile.getHeight() / 2);
+		}
+		if (attack) {
+			if (missilePosX < Gdx.graphics.getWidth()) {
+				missilePosX += attackSpeed;
+			} else {
+				missilePosX = spaceShipPosX + (spaceShip.getWidth() / 2) - (missile.getWidth() / 2);
+				attack = false;
+			}
+		} else {
+			missilePosX = spaceShipPosX + (spaceShip.getWidth() / 2) - (missile.getWidth() / 2);
+			missilePosY = spaceShipPosY + (spaceShip.getHeight() / 2) - (missile.getHeight() / 2);
+		}
 	}
 }
