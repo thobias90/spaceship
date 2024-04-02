@@ -14,6 +14,7 @@ public class SpaceShip extends ApplicationAdapter {
 	Texture bgImg, tShip;
 	private Sprite spaceShip;
 	private float spaceShipPositionX, spaceShipPositionY;
+	private int speed = 10;
 	
 	/**
 	 * Cria os elementos
@@ -54,22 +55,22 @@ public class SpaceShip extends ApplicationAdapter {
 	private void moveSpaceShip() {
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			if (spaceShipPositionX < (Gdx.graphics.getWidth() - spaceShip.getWidth())) {
-				spaceShipPositionX += 10;
+				spaceShipPositionX += speed;
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			if (spaceShipPositionX > 0) {
-				spaceShipPositionX -= 10;
+				spaceShipPositionX -= speed;
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			if (spaceShipPositionY < (Gdx.graphics.getHeight() - spaceShip.getHeight())) {
-				spaceShipPositionY += 10;
+				spaceShipPositionY += speed;
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			if (spaceShipPositionY > 0) {
-				spaceShipPositionY -= 10;
+				spaceShipPositionY -= speed;
 			}
 		}
 	}
