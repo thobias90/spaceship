@@ -9,7 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 public class SpaceShip extends ApplicationAdapter {
-	//The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
+	// The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
 	SpriteBatch background;
 	Texture bgImg, tShip;
 	private Sprite spaceShip;
@@ -17,7 +17,7 @@ public class SpaceShip extends ApplicationAdapter {
 	private int speed = 10;
 	
 	/**
-	 * Cria os elementos
+	 * Create elements
 	 */
 	@Override
 	public void create () {
@@ -30,7 +30,7 @@ public class SpaceShip extends ApplicationAdapter {
 	}
 
 	/**
-	 * Loop principal
+	 * Main loop
 	 */
 	@Override
 	public void render () {
@@ -43,7 +43,7 @@ public class SpaceShip extends ApplicationAdapter {
 	}
 	
 	/**
-	 * Limpa o que criou
+	 * Clear resources
 	 */
 	@Override
 	public void dispose () {
@@ -52,6 +52,9 @@ public class SpaceShip extends ApplicationAdapter {
 		tShip.dispose();
 	}
 
+	/**
+	 * Move spaceship
+	 */
 	private void moveSpaceShip() {
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			if (spaceShipPositionX < (Gdx.graphics.getWidth() - spaceShip.getWidth())) {
