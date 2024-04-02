@@ -9,7 +9,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
-		config.setTitle("SpaceShip");
+		config.setTitle("SpaceShip::Game::Java:LibGDX");
+		config.setWindowedMode(1024, 720);
 		new Lwjgl3Application(new SpaceShip(), config);
 	}
 }
