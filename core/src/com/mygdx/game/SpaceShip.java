@@ -6,26 +6,35 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class SpaceShip extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+	SpriteBatch background;
+	Texture bgImg;
 	
+	/**
+	 * Cria os elementos
+	 */
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		background = new SpriteBatch();
+		bgImg = new Texture("bg.png");
 	}
 
+	/**
+	 * Loop principal
+	 */
 	@Override
 	public void render () {
 		ScreenUtils.clear(1, 0, 0, 1);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
+		background.begin();
+		background.draw(bgImg, 0, 0);
+		background.end();
 	}
 	
+	/**
+	 * Limpa o que criou
+	 */
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+		background.dispose();
+		bgImg.dispose();
 	}
 }
