@@ -53,16 +53,24 @@ public class SpaceShip extends ApplicationAdapter {
 
 	private void moveSpaceShip() {
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			spaceShipPositionX += 10;
+			if (spaceShipPositionX < (Gdx.graphics.getWidth() - spaceShip.getWidth())) {
+				spaceShipPositionX += 10;
+			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			spaceShipPositionX -= 10;
+			if (spaceShipPositionX > 0) {
+				spaceShipPositionX -= 10;
+			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			spaceShipPositionY += 10;
+			if (spaceShipPositionY < (Gdx.graphics.getHeight() - spaceShip.getHeight())) {
+				spaceShipPositionY += 10;
+			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			spaceShipPositionY -= 10;
+			if (spaceShipPositionY > 0) {
+				spaceShipPositionY -= 10;
+			}
 		}
 	}
 }
