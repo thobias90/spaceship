@@ -16,8 +16,8 @@ import java.util.Iterator;
 public class SpaceShip extends ApplicationAdapter {
 	// The SpriteBatch is a special class that is used to draw 2D images, like the
 	// textures we loaded.
-	SpriteBatch background;
-	Texture bgImg, tShip, tMissile, tEnemy;
+	private SpriteBatch background;
+	private Texture bgImg, tShip, tMissile, tEnemy;
 	private Sprite spaceShip, missile;
 	private float spaceShipPosX, spaceShipPosY, missilePosX, missilePosY;
 	private int speed = 10;
