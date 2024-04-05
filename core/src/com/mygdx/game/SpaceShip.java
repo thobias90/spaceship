@@ -24,7 +24,7 @@ public class SpaceShip extends ApplicationAdapter {
 	private Sprite spaceShip, missile;
 	private float spaceShipPosX, spaceShipPosY, missilePosX, missilePosY;
 	private int speed = 10;
-	private boolean attack, gameOver, start;
+	private boolean attack;
 	private int attackSpeed = 20;
 	private Array<Rectangle> enemies;
 	private int enemySpeed = 7;
@@ -35,12 +35,19 @@ public class SpaceShip extends ApplicationAdapter {
 	private FreeTypeFontGenerator generator;
 	private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 	private BitmapFont bitmap;
+	private enum State {
+		START,
+		RUN,
+		GAMEOVER
+	}
+	private State gameState;
 
 	/**
 	 * Create elements
 	 */
 	@Override
 	public void create() {
+		// Graphics elements
 		background = new SpriteBatch();
 		bgImg = new Texture("bg.png");
 		tShip = new Texture("spaceship.png");
@@ -49,13 +56,14 @@ public class SpaceShip extends ApplicationAdapter {
 		missile = new Sprite(tMissile);
 		tEnemy = new Texture("enemy.png");
 		enemies = new Array<Rectangle>();
+
+		// Positions
 		spaceShipPosX = 0;
 		spaceShipPosY = 0;
 		missilePosX = 0;
 		missilePosY = 0;
-		attack = false;
-		lastEnemyTime = 0;
-		score = 0;
+	
+		// Labels
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
 		parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		parameter.size = 30;
@@ -63,8 +71,14 @@ public class SpaceShip extends ApplicationAdapter {
 		parameter.borderColor = Color.BLACK;
 		parameter.color = Color.WHITE;
 		bitmap = generator.generateFont(parameter);
-		gameOver = false;
-		start = false;
+
+		// Playability variables
+		lastEnemyTime = 0;
+		score = 0;
+		attack = false;
+
+		// Game FSM
+		gameState = State.START;
 	}
 
 	/**
@@ -72,46 +86,11 @@ public class SpaceShip extends ApplicationAdapter {
 	 */
 	@Override
 	public void render() {
-		if (!gameOver) {
-			this.moveSpaceShip();
-			this.moveMissile();
-			this.moveEnemies();
-		}
 		ScreenUtils.clear(1, 0, 0, 1);
 		background.begin();
 		background.draw(bgImg, 0, 0);
-		if (!start) {
-			bitmap.draw(background, "PRESS ENTER TO START", (Gdx.graphics.getWidth() / 2) - 210, (Gdx.graphics.getHeight() / 2));
-			if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-				start = true;
-			}
-		} else {
-			if (!gameOver) {
-				if (attack) {
-					background.draw(missile, missilePosX, missilePosY);
-				}
-				background.draw(spaceShip, spaceShipPosX, spaceShipPosY);
-				for (Rectangle enemy : enemies) {
-					background.draw(tEnemy, enemy.x, enemy.y);
-				}
-				bitmap.draw(background, "Score: " + score, 20, (Gdx.graphics.getHeight() - 20));
-				bitmap.draw(background, "Life: " + life, (Gdx.graphics.getWidth() - 100), (Gdx.graphics.getHeight() - 20));
-			} else {
-				bitmap.draw(background, "Score: " + score, 20, (Gdx.graphics.getHeight() - 20));
-				bitmap.draw(background, "GAME OVER", (Gdx.graphics.getWidth() / 2) - 90, (Gdx.graphics.getHeight() / 2));
-				bitmap.draw(background, "PRESS ENTER TO RESTART", (Gdx.graphics.getWidth() / 2) - 210, (Gdx.graphics.getHeight() / 2)-30);
-				if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-					score = 0;
-					life = 3;
-					spaceShipPosX = 0;
-					spaceShipPosY = 0;
-					gameOver = false;
-					enemies.clear();
-					enemySpawnTime= 750;
-				}
-			}
-		}
-		
+
+		this.gameRenderRun();
 
 		background.end();
 	}
@@ -124,6 +103,8 @@ public class SpaceShip extends ApplicationAdapter {
 		background.dispose();
 		bgImg.dispose();
 		tShip.dispose();
+		tMissile.dispose();
+		tEnemy.dispose();
 	}
 
 	private void moveSpaceShip() {
@@ -194,11 +175,11 @@ public class SpaceShip extends ApplicationAdapter {
 				attack = false;
 				iter.remove();
 			} else if (this.collide(enemy.x, enemy.y, enemy.getWidth(), enemy.getHeight(), spaceShipPosX, spaceShipPosY,
-					spaceShip.getWidth(), spaceShip.getHeight()) && !gameOver) {
+					spaceShip.getWidth(), spaceShip.getHeight()) && !this.isGameOver()) {
 				if (life > 0) {
 					life--;
 				} else {
-					gameOver = true;
+					gameState = State.GAMEOVER;
 				}
 				iter.remove();
 			}
@@ -214,5 +195,68 @@ public class SpaceShip extends ApplicationAdapter {
 			return true;
 		}
 		return false;
+	}
+
+	private void renderStart() {
+		bitmap.draw(background, "PRESS ENTER TO START", (Gdx.graphics.getWidth() / 2) - 210,
+				(Gdx.graphics.getHeight() / 2));
+		if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+			gameState = State.RUN;
+		}
+	}
+
+	private void renderRun() {
+		this.moveSpaceShip();
+		this.moveMissile();
+		this.moveEnemies();
+		if (attack) {
+			background.draw(missile, missilePosX, missilePosY);
+		}
+		background.draw(spaceShip, spaceShipPosX, spaceShipPosY);
+		for (Rectangle enemy : enemies) {
+			background.draw(tEnemy, enemy.x, enemy.y);
+		}
+		bitmap.draw(background, "Score: " + score, 20, (Gdx.graphics.getHeight() - 20));
+		bitmap.draw(background, "Life: " + life, (Gdx.graphics.getWidth() - 100), (Gdx.graphics.getHeight() - 20));
+	}
+
+	private void renderGameOver() {
+		bitmap.draw(background, "Score: " + score, 20, (Gdx.graphics.getHeight() - 20));
+		bitmap.draw(background, "GAME OVER", (Gdx.graphics.getWidth() / 2) - 90, (Gdx.graphics.getHeight() / 2));
+		bitmap.draw(background, "PRESS ENTER TO RESTART", (Gdx.graphics.getWidth() / 2) - 210,
+				(Gdx.graphics.getHeight() / 2) - 30);
+		if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+			score = 0;
+			life = 3;
+			attack = false;
+			spaceShipPosX = 0;
+			spaceShipPosY = 0;
+			enemies.clear();
+			enemySpawnTime = 750;
+			gameState = State.RUN;
+		}
+	}
+
+	private void gameRenderRun() {
+		switch (gameState) {
+			case START:
+				this.renderStart();
+				break;
+
+			case RUN:
+				this.renderRun();
+				break;
+
+			case GAMEOVER:
+				this.renderGameOver();
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	private boolean isGameOver() {
+		return (this.gameState == State.GAMEOVER);
 	}
 }
