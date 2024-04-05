@@ -106,6 +106,8 @@ public class SpaceShip extends ApplicationAdapter {
 					spaceShipPosX = 0;
 					spaceShipPosY = 0;
 					gameOver = false;
+					enemies.clear();
+					enemySpawnTime= 750;
 				}
 			}
 		}
